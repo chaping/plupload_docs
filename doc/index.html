@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Plupload文档</title>
+</head>
+<body id="cnblogs_post_body">
+	<style><!--
+#cnblogs_post_body table.mytable { border-collapse: collapse; border-spacing: 0; font-size: 14px; }
+#cnblogs_post_body table.mytable a{ color:#214fa3;font-size:14px}
+#cnblogs_post_body table.mytable td{ color:#666;}
+#cnblogs_post_body table.mytable,#cnblogs_post_body .mytable th,#cnblogs_post_body .mytable td { border-width: 1px; border-style: solid; margin: 0; font-family:'Microsoft Yahei', tahoma, arial!important; font-family:'宋体', tahoma, arial; }
+#cnblogs_post_body table.mytable { table-layout: fixed; width: 100%; margin-bottom: 6px; padding: 0 1px 1px 0; border-spacing: 0; border-collapse: separate; *border-collapse:collapse; border-color: #abb8ce; background: #ededed; }
+#cnblogs_post_body .mytable th { padding: 10px 4px; font-weight: bold; border-color: #f8f8f8 #abb8ce #abb8ce #f8f8f8; text-align: left; text-shadow: 1px 1px 0 #e4edfb; vertical-align: middle; background: #d0dbee; }
+#cnblogs_post_body .mytable thead th { text-align:center; vertical-align:middle; }
+#cnblogs_post_body .mytable th strong { color:#090; border-bottom:1px dashed #090;  text-decoration:underline; }
+#cnblogs_post_body .mytable th b{ color:#666; font-weight:normal;}
+#cnblogs_post_body .mytable td { padding:0; }
+#cnblogs_post_body .mytable th.separate { text-align:center; border-color: #e1f196 #aecd1b #aecd1b #f3fad6; background-color: #f3f7fd; }
+#cnblogs_post_body .mytable td { padding: 4px; font: 14px consolas, "Courier New", courier, monospace; text-align: left; vertical-align: middle; }
+#cnblogs_post_body .mytable td { border-color: #f8f8f8 #abb8ce #abb8ce #f8f8f8; background: #e0e8f5; }
+#cnblogs_post_body .mytable tr.odd th { background: #dbe4f4; }
+#cnblogs_post_body .mytable tr.odd td { background: #e6eef9; }
+#cnblogs_post_body .mytable br { margin-bottom:1.8em; }
+#cnblogs_post_body .mytable.method th a span{ font-weight:normal; color:#2592EB; padding:0 3px;}
+#cnblogs_post_body .mytable.event p b{ color:#777}
+#cnblogs_post_body table.mytable .parameter,#cnblogs_post_body table.mytable .type,#cnblogs_post_body table.mytable .default { width:7em; }
+#cnblogs_post_body .mytable code{ background: #f7f7f9; border:1px solid #e1e1e8; padding: 1px 4px; color: #777; white-space: nowrap; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; font-family: Monaco, Menlo, Consolas, "Courier New", monospace;}
+#cnblogs_post_body .mytable pre{ background: #f7f7f9; border:1px solid #e1e1e8; padding: 1px 4px; color: #666;-moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; font-family: Monaco, Menlo, Consolas, "Courier New", monospace;}
+--></style>
+	<p>基本使用方法可以到<a href="http://www.cnblogs.com/2050/p/3913184.html">我的博客</a>中去查看</p>
+    <p><a href="http://chaping.github.io/plupload/demo/">可以看看Plupload的几个demo</a></p>
+    <p><a href="#plupload_doc1">一、配置参数</a></p>
+    <p><a href="#plupload_doc2">二、各种事件说明</a></p>
+    <p><a href="#plupload_doc3">三、Plupload实例的属性</a></p>
+    <p><a href="#plupload_doc4">四、Plupload实例的方法</a></p>
+    <p><a href="#plupload_doc5">五、文件对象的属性和方法</a></p>
+    <p><a href="#plupload_doc6">六、QueueProgress 对象的属性</a></p>
+    <p><a href="#plupload_doc7">七、plupload命名空间上的一些属性</a></p>
+	<p id="plupload_doc1">
+		<strong>一、配置参数</strong>
+	</p>
+	<p>实例化一个plupload对象时，也就是 <code>new plupload.Uploader()</code>，需要传入一个对象作为配置参数。后面内容中出现的plupload实例均是指<code>new plupload.Uploader()</code>得到的实例对象</p>
+	<table class="mytable" style="width: 98%;" border="1">
+		<tbody>
+			<tr>
+				<th width="160">属性</th>
+				<th width="100">类型</th>
+				<th width="90">默认值</th>
+				<th>描述</th>
+			</tr>
+			<tr>
+				<th>
+					<a>browse_button</a>
+				</th>
+				<td>String / DOM</td>
+				<td>&nbsp;</td>
+				<td>触发文件选择对话框的DOM元素，当点击该元素后便后弹出文件选择对话框。该值可以是DOM元素对象本身，也可以是该DOM元素的id</td>
+			</tr>
+			<tr>
+				<th>
+					<a>url</a>
+				</th>
+				<td>String</td>
+				<td>&nbsp;</td>
+				<td>服务器端接收和处理上传文件的脚本地址，可以是相对路径(相对于当前调用Plupload的文档)，也可以是绝对路径</td>
+			</tr>
+			<tr>
+				<th>
+					<a>filters</a>
+				</th>
+				<td>Object</td>
+				<td>{ }</td>
+				<td>可以使用该参数来限制上传文件的类型，大小等，该参数以对象的形式传入，它包括三个属性：
+					<p><strong>mime_types：</strong>用来限定上传文件的类型，为一个数组，该数组的每个元素又是一个对象，该对象有title和extensions两个属性，title为该过滤器的名称，extensions为文件扩展名，有多个时用逗号隔开。该属性默认为一个空数组，即不做限制。</p>
+					<p><strong>max_file_size：</strong>用来限定上传文件的大小，如果文件体积超过了该值，则不能被选取。值可以为一个数字，单位为b,也可以是一个字符串，由数字和单位组成，如'200kb'</p>
+					<p><strong>prevent_duplicates：</strong>是否允许选取重复的文件，为true时表示不允许，为false时表示允许，默认为false。如果两个文件的文件名和大小都相同，则会被认为是重复的文件</p>
+					<p>filters完整的配置示例如下(当然也可以只配置其中的某一项)：</p>
+					<pre>
+filters: {
+  mime_types : [ //只允许上传图片和zip文件
+    { title : "Image files", extensions : "jpg,gif,png" }, 
+    { title : "Zip files", extensions : "zip" }
+  ],
+  max_file_size : '400kb', //最大只能上传400kb的文件
+  prevent_duplicates : true //不允许选取重复文件
+}
+					</pre>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<a>headers</a>
+				</th>
+				<td>Object</td>
+				<td>&nbsp;</td>
+				<td>设置上传时的自定义头信息，以键/值对的形式传入，键代表头信息属性名，键代表属性值。html4上传方式不支持设置该属性。</td>
+			</tr>
+			<tr>
+				<th>
+					<a>multipart</a>
+				</th>
+				<td>Boolean</td>
+				<td>true</td>
+				<td>为<code>true</code>时将以<code>multipart/form-data</code>的形式来上传文件，为false时则以二进制的格式来上传文件。html4上传方式不支持以二进制格式来上传文件，在flash上传方式中，二进制上传也有点问题。并且二进制格式上传还需要在服务器端做特殊的处理。一般我们用multipart/form-data的形式来上传文件就足够了。</td>
+			</tr>
+			<tr>
+				<th>
+					<a>multipart_params</a>
+				</th>
+				<td>Object</td>
+				<td>&nbsp;</td>
+				<td>上传时的附加参数，以键/值对的形式传入，服务器端可是使用$_POST来获取这些参数(以php为例)。比如：
+					<pre>
+multipart_params: {
+  one: '1',
+  two: '2',
+  three: { //值还可以是一个字面量对象
+    a: '4',
+    b: '5'
+  },
+  four: ['6', '7', '8']  //也可以是一个数组
+}
+					</pre>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<a>max_retries</a>
+				</th>
+				<td>Number</td>
+				<td>0</td>
+				<td>当发生<code>plupload.HTTP_ERROR</code>错误时的重试次数，为0时表示不重试</td>
+			</tr>
+			<tr>
+				<th>
+					<a>chunk_size</a>
+				</th>
+				<td>Number/String</td>
+				<td>0</td>
+				<td>分片上传文件时，每片文件被切割成的大小，为数字时单位为字节。也可以使用一个带单位的字符串，如<code>"200kb"</code>。当该值为0时表示不使用分片上传功能</td>
+			</tr>
+			<tr>
+				<th>
+					<a>resize</a>
+				</th>
+				<td>Object</td>
+				<td></td>
+				<td>可以使用该参数对将要上传的图片进行压缩，该参数是一个对象，里面包括5个属性：
+					<p><strong>width：</strong>指定压缩后图片的宽度，如果没有设置该属性则默认为原始图片的宽度</p>
+					<p><strong>height：</strong>指定压缩后图片的高度，如果没有设置该属性则默认为原始图片的高度</p>
+					<p><strong>crop：</strong></p>
+					<p><strong>quality：</strong>压缩后图片的质量，只对jpg格式的图片有效，默认为90。<code>quality</code>可以跟<code>width</code>和<code>height</code>一起使用，但也可以单独使用，单独使用时，压缩后图片的宽高不会变化，但由于质量降低了，所以体积也会变小</p>
+					<p><strong>preserve_headers：</strong>压缩后是否保留图片的元数据，<code>true</code>为保留，<code>false</code>为不保留,默认为<code>true</code>。删除图片的元数据能使图片的体积减小一点点</p>
+					<p>resize参数的配置示例如下：</p>
+					<pre>
+resize: {
+  width: 100,
+  height: 100,
+  crop: true,
+  quality: 60,
+  preserve_headers: false
+}
+					</pre>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<a>drop_element</a>
+				</th>
+				<td>DOM/String/Array</td>
+				<td></td>
+				<td>指定了使用拖拽方式来选择上传文件时的拖拽区域，即可以把文件拖拽到这个区域的方式来选择文件。该参数的值可以为一个DOM元素的id,也可是DOM元素本身，还可以是一个包括多个DOM元素的数组。如果不设置该参数则拖拽上传功能不可用。目前只有html5上传方式才支持拖拽上传。</td>
+			</tr>
+			<tr>
+				<th>
+					<a>multi_selection</a>
+				</th>
+				<td>Boolean</td>
+				<td>true</td>
+				<td>是否可以在文件浏览对话框中选择多个文件，true为可以，false为不可以。默认true，即可以选择多个文件。需要注意的是，在某些不支持多选文件的环境中，默认值是false。比如在ios7的safari浏览器中，由于存在bug，造成不能多选文件。当然，在html4上传方式中，也是无法多选文件的。</td>
+			</tr>
+			<tr>
+				<th>
+					<a>required_features</a>
+				</th>
+				<td>Mix</td>
+				<td></td>
+				<td>可以使用该参数来设置你必须需要的一些功能特征，Plupload会根据你的设置来选择合适的上传方式。因为，不同的上传方式，支持的功能是不同的，比如拖拽上传只有html5上传方式支持，图片压缩则只有html5,flash,silverlight上传方式支持。该参数的值是一个混合类型，可以是一个以逗号分隔的字符串，</td>
+			</tr>
+			<tr>
+				<th>
+					<a>unique_names</a>
+				</th>
+				<td>Boolean</td>
+				<td>false</td>
+				<td>当值为true时会为每个上传的文件生成一个唯一的文件名，并作为额外的参数post到服务器端，参数明为<code>name</code>,值为生成的文件名。</td>
+			</tr>
+			<tr>
+				<th>
+					<a>runtimes</a>
+				</th>
+				<td>String</td>
+				<td>html5,flash,<br />silverlight,<br />html4</td>
+				<td>用来指定上传方式，指定多个上传方式请使用逗号隔开。一般情况下，你不需要配置该参数，因为Plupload默认会根据你的其他的参数配置来选择最合适的上传方式。如果没有特殊要求的话，Plupload会首先选择html5上传方式，如果浏览器不支持html5，则会使用flash或silverlight，如果前面两者也都不支持，则会使用最传统的html4上传方式。如果你想指定使用某个上传方式，或改变上传方式的优先顺序，则你可以配置该参数。</td>
+			</tr>
+			<tr>
+				<th>
+					<a>file_data_name</a>
+				</th>
+				<td>String</td>
+				<td>file</td>
+				<td>指定文件上传时文件域的名称，默认为<code>file</code>,例如在php中你可以使用<code>$_FILES['file']</code>来获取上传的文件信息</td>
+			</tr>
+			<tr>
+				<th>
+					<a>container</a>
+				</th>
+				<td>DOM/String</td>
+				<td></td>
+				<td>用来指定Plupload所创建的html结构的父容器，默认为前面指定的<code>browse_button</code>的父元素。该参数的值可以是一个元素的id,也可以是DOM元素本身。</td>
+			</tr>
+			<tr>
+				<th>
+					<a>flash_swf_url</a>
+				</th>
+				<td>String</td>
+				<td>js/Moxie.swf</td>
+				<td>flash上传组件的url地址，如果是相对路径，则相对的是调用Plupload的html文档。当使用flash上传方式会用到该参数。</td>
+			</tr>
+			<tr>
+				<th>
+					<a>silverlight_xap_url</a>
+				</th>
+				<td>String</td>
+				<td>js/Moxie.xap</td>
+				<td>silverlight上传组件的url地址，如果是相对路径，则相对的是调用Plupload的html文档。当使用silverlight上传方式会用到该参数。</td>
+			</tr>
+			
+		</tbody>
+	</table>
+	<p id="plupload_doc2"> <strong>二、各种事件说明</strong>
+	</p>
+	<p>要了解plupload的运行状况，靠的就是在这些事件了</p>
+	<table class="mytable event" style="width: 98%;" border="1">
+		<tbody>
+			<tr><th><a>Init</a></th></tr>
+			<tr>
+				<td>
+				当Plupload初始化完成后触发
+				<p>监听函数参数：<b>(uploader)</b></p>
+				<p><code>uploader</code>为当前的plupload实例对象</p>
+				</td>
+			</tr>
+			<tr><th><a>PostInit</a></th></tr>
+			<tr>
+				<td>当Init事件发生后触发
+				<p>监听函数参数：<b>(uploader)</b></p>
+				<p><code>uploader</code>为当前的plupload实例对象</p>
+				</td>
+			</tr>
+			<tr><th><a>OptionChanged</a></th></tr>
+			<tr>
+				<td>当使用Plupload实例的setOption()方法改变当前配置参数后触发
+				<p>监听函数参数：<b>(uploader,option_name,new_value,old_value)</b></p>
+				<p><code>uploader</code>为当前的plupload实例对象，<code>option_name</code>为发生改变的参数名称，<code>new_value</code>为改变后的值，<code>old_value</code>为改变前的值</p>
+				</td>
+			</tr>
+			<tr><th><a>Refresh</a></th></tr>
+			<tr>
+				<td>当调用plupload实例的refresh()方法后会触发该事件，暂时不清楚还有什么其他动作会触发该事件，但据我测试，把文件添加到上传队列后也会触发该事件。
+				<p>监听函数参数：<b>(uploader)</b></p>
+				<p><code>uploader</code>为当前的plupload实例对象</p>
+				</td>
+			</tr>
+			<tr><th><a>StateChanged</a></th></tr>
+			<tr>
+				<td>当上传队列的状态发生改变时触发
+				<p>监听函数参数：<b>(uploader)</b></p>
+				<p><code>uploader</code>为当前的plupload实例对象</p>
+				</td>
+			</tr>
+			<tr><th><a>UploadFile</a></th></tr>
+			<tr>
+				<td>当上传队列中某一个文件开始上传后触发
+					<p>监听函数参数：<b>(uploader,file)</b></p>
+					<p><code>uploader</code>为当前的plupload实例对象，<code>file</code>为触发此事件的文件对象</p>
+				</td>
+			</tr>
+			<tr><th><a>BeforeUpload</a></th></tr>
+			<tr>
+				<td>当队列中的某一个文件正要开始上传前触发
+					<p>监听函数参数：<b>(uploader,file)</b></p>
+					<p><code>uploader</code>为当前的plupload实例对象，<code>file</code>为触发此事件的文件对象</p>
+				</td>
+			</tr>
+			<tr><th><a>QueueChanged</a></th></tr>
+			<tr>
+				<td>当上传队列发生变化后触发，即上传队列新增了文件或移除了文件。QueueChanged事件会比FilesAdded或FilesRemoved事件先触发
+					<p>监听函数参数：<b>(uploader)</b></p>
+					<p><code>uploader</code>为当前的plupload实例对象</p>
+				</td>
+			</tr>
+			<tr><th><a>UploadProgress</a></th></tr>
+			<tr>
+				<td>会在文件上传过程中不断触发，可以用此事件来显示上传进度
+					<p>监听函数参数：<b>(uploader,file)</b></p>
+					<p><code>uploader</code>为当前的plupload实例对象，<code>file</code>为触发此事件的文件对象</p>
+				</td>
+			</tr>
+			<tr><th><a>FilesRemoved</a></th></tr>
+			<tr>
+				<td>当文件从上传队列移除后触发
+				<p>监听函数参数：<b>(uploader,files)</b></p>
+					<p>
+						<code>uploader</code>为当前的plupload实例对象，<code>files</code>为一个数组，里面的元素为本次事件所移除的文件对象</p>
+				</td>
+			</tr>
+			<tr><th><a>FileFiltered</a></th></tr>
+			<tr>
+				<td>暂不清楚该事件的意义，但根据测试得出，该事件会在每一个文件被添加到上传队列前触发
+				<p>监听函数参数：<b>(uploader,file)</b></p>
+				<p><code>uploader</code>为当前的plupload实例对象，<code>file</code>为触发此事件的文件对象</p>
+				</td>
+			</tr>
+			<tr><th><a>FilesAdded</a></th></tr>
+			<tr>
+				<td>
+					当文件添加到上传队列后触发
+					<p>监听函数参数：<b>(uploader,files)</b></p>
+					<p>
+						<code>uploader</code>为当前的plupload实例对象，<code>files</code>为一个数组，里面的元素为本次添加到上传队列里的文件对象</p>
+				</td>
+			</tr>
+			<tr><th><a>FileUploaded</a></th></tr>
+			<tr>
+				<td>当队列中的某一个文件上传完成后触发
+					<p>监听函数参数：<b>(uploader,file,responseObject)</b></p>
+					<p><code>uploader</code>为当前的plupload实例对象，<code>file</code>为触发此事件的文件对象，<code>responseObject</code>为服务器返回的信息对象，它有以下3个属性：</p>
+					<p><b>response：</b>服务器返回的文本</p>
+					<p><b>responseHeaders：</b>服务器返回的头信息</p>
+					<p><b>status：</b>服务器返回的http状态码，比如200</p>
+				</td>
+			</tr>
+			<tr><th><a>ChunkUploaded</a></th></tr>
+			<tr>
+				<td>当使用文件小片上传功能时，每一个小片上传完成后触发
+				<p>监听函数参数：<b>(uploader,file,responseObject)</b></p>
+				<p><code>uploader</code>为当前的plupload实例对象，<code>file</code>为触发此事件的文件对象，<code>responseObject</code>为服务器返回的信息对象，它有以下5个属性：</p>
+				<p><b>offset：</b>该文件小片在整体文件中的偏移量</p>
+				<p><b>response：</b>服务器返回的文本</p>
+				<p><b>responseHeaders：</b>服务器返回的头信息</p>
+				<p><b>status：</b>服务器返回的http状态码，比如200</p>
+				<p><b>total：</b>该文件(指的是被切割成了许多文件小片的那个文件)的总大小，单位为字节</p>
+				</td>
+			</tr>
+			<tr><th><a>UploadComplete</a></th></tr>
+			<tr>
+				<td>当上传队列中所有文件都上传完成后触发
+					<p>监听函数参数：<b>(uploader,files)</b></p>
+					<p>
+						<code>uploader</code>为当前的plupload实例对象，<code>files</code>为一个数组，里面的元素为本次已完成上传的所有文件对象</p>
+				</td>
+			</tr>
+			<tr><th><a>Error</a></th></tr>
+			<tr>
+				<td>当发生触发时触发
+				<p>监听函数参数：<b>(uploader,errObject)</b></p>
+				<p><code>uploader</code>为当前的plupload实例对象，<code>errObject</code>为错误对象，它至少包含以下3个属性(因为不同类型的错误，属性可能会不同)：</p>
+				<p><b>code：</b>错误代码，具体请参考plupload上定义的表示错误代码的常量属性</p>
+				<p><b>file：</b>与该错误相关的文件对象</p>
+				<p><b>message：</b>错误信息</p>
+				</td>
+			</tr>
+			<tr><th><a>Destroy</a></th></tr>
+			<tr>
+				<td>当调用destroy方法时触发
+				<p>监听函数参数：<b>(uploader)</b></p>
+				<p><code>uploader</code>为当前的plupload实例对象</p>
+				</td>
+			</tr>
+			
+		</tbody>
+	</table>
+	<p id="plupload_doc3">
+		<strong>三、Plupload实例的属性</strong>
+	</p>
+	<table class="mytable" style="width: 98%;" border="1">
+		<tbody>
+			<tr>
+				<th width="200">属性</th>
+				<th>描述</th>
+			</tr>
+			<tr>
+				<th><a>id</a></th>
+				<td>Plupload实例的唯一标识id</td>
+			</tr>
+			<tr>
+				<th><a>state</a></th>
+				<td>当前的上传状态，可能的值为<code>plupload.STARTED</code>或<code>plupload.STOPPED</code>，该值由Plupload实例的<code>stop()</code>或<code>statr()</code>方法控制。默认为<code>plupload.STOPPED</code></td>
+			</tr>
+			<tr>
+				<th><a>runtime</a></th>
+				<td>当前使用的上传方式</td>
+			</tr>
+			<tr>
+				<th><a>files</a></th>
+				<td>当前的上传队列，是一个由上传队列中的文件对象组成的数组</td>
+			</tr>
+			<tr>
+				<th><a>settings</a></th>
+				<td>当前的配置参数对象</td>
+			</tr>
+			<tr>
+				<th><a>total</a></th>
+				<td>表示总体进度信息的QueueProgress对象</td>
+			</tr>
+		</tbody>
+	</table>
+	<p id="plupload_doc4">
+		<strong>四、Plupload实例的方法</strong>
+	</p>
+	<table class="mytable method" style="width: 98%;" border="1">
+		<tbody>
+			<tr>
+				<th width="200">方法</th>
+				<th>描述</th>
+			</tr>
+			<tr>
+				<th><a>init()</a></th>
+				<td>初始化Plupload实例</td>
+			</tr>
+			<tr>
+				<th><a>setOption(<span>option, [value]</span>)</a></th>
+				<td>设置某个特定的配置参数,option为参数名称，value为要设置的参数值。option也可以为一个由参数名和参数值键/值对组成的对象，这样就可以一次设定多个参数，此时该方法的第二个参数value会被忽略。</td>
+			</tr>
+			<tr>
+				<th><a>getOption(<span>[option]</span>)</a></th>
+				<td>获取当前的配置参数，参数option为需要获取的配置参数名称，如果没有指定option，则会获取所有的配置参数</td>
+			</tr>
+			<tr>
+				<th><a>refresh()</a></th>
+				<td>刷新当前的plupload实例，暂时还不明白什么时候需要使用</td>
+			</tr>
+			<tr>
+				<th><a>start()</a></th>
+				<td>开始上传队列中的文件</td>
+			</tr>
+			<tr>
+				<th><a>stop()</a></th>
+				<td>停止队列中的文件上传</td>
+			</tr>
+			<tr>
+				<th><a>disableBrowse(<span>disable</span>)</a></th>
+				<td>禁用或启用plupload的文件浏览按钮,参数<code>disable</code>为<code>true</code>时为禁用，为<code>false</code>时为启用。默认为<code>true</code></td>
+			</tr>
+			<tr>
+				<th><a>getFile(<span>id</span>)</a></th>
+				<td>通过id来获取文件对象</td>
+			</tr>
+			<tr>
+				<th><a>addFile(<span>file, [fileName]</span>)</a></th>
+				<td>向上传队列中添加文件，如果成功添加了文件，会触发<code>FilesAdded</code>事件。参数file为要添加的文件,可以是一个原生的文件,或者一个plupload文件对象,或者一个<code>input[type="file"]</code>元素,还可以是一个包括前面那几种东西的数组；fileName为给该文件指定的名称</td>
+			</tr>
+			<tr>
+				<th><a>removeFile(<span>file</span>)</a></th>
+				<td>从上传队列中移除文件，参数<code>file</code>为plupload文件对象或先前指定的文件名称</td>
+			</tr>
+			<tr>
+				<th><a>splice(<span>start, length</span>)</a></th>
+				<td>从上传队列中移除一部分文件，<code>start</code>为开始移除文件在队列中的索引，<code>length</code>为要移除的文件的数量，该方法的返回值为被移除的文件。该方法会触发<code>FilesRemoved </code>和<code>QueueChanged</code>事件</td>
+			</tr>
+			<tr>
+				<th><a>trigger(<span>name, Multiple</span>)</a></th>
+				<td>触发某个事件。<code>name</code>为要触发的事件名称，<code>Multiple</code>为传给该事件监听函数的参数，是一个对象</td>
+			</tr>
+			<tr>
+				<th><a>hasEventListener(<span>name</span>)</a></th>
+				<td>用来判断某个事件是否有监听函数，<code>name</code>为事件名称</td>
+			</tr>
+			<tr>
+				<th><a>bind(<span>name, func, scope</span>)</a></th>
+				<td>给某个事件绑定监听函数，<code>name</code>为事件名，<code>func</code>为监听函数，<code>scope</code>为监听函数的作用域，也就是监听函数中this的指向</td>
+			</tr>
+			<tr>
+				<th><a>unbind(<span>name, func</span>)</a></th>
+				<td>移除事件的监听函数，<code>name</code>为事件名称，<code>func</code>为要移除的监听函数</td>
+			</tr>
+			<tr>
+				<th><a>unbindAll()</a></th>
+				<td>移除所有事件的所有监听函数</td>
+			</tr>
+			<tr>
+				<th><a>destroy()</a></th>
+				<td>销毁plupload实例</td>
+			</tr>
+		</tbody>
+	</table>
+	<p id="plupload_doc5">
+		<strong>五、文件对象的属性和方法</strong>
+	</p>
+	<p>在很多事件监听函数中，都会提供文件对象给你</p>
+	<table class="mytable" style="width: 98%;" border="1">
+		<tbody>
+			<tr>
+				<th width="160">属性/方法</th>
+				<th>描述</th>
+			</tr>
+			<tr>
+				<th>
+					<a>id</a>
+				</th>
+				<td>文件id</td>
+			</tr>
+			<tr>
+				<th>
+					<a>name</a>
+				</th>
+				<td>文件名，例如"myfile.gif"</td>
+			</tr>
+			<tr>
+				<th>
+					<a>type</a>
+				</th>
+				<td>文件类型，例如"image/jpeg"</td>
+			</tr>
+			<tr>
+				<th>
+					<a>size</a>
+				</th>
+				<td>文件大小，单位为字节，当启用了客户端压缩功能后，该值可能会改变</td>
+			</tr>
+			<tr>
+				<th>
+					<a>origSize</a>
+				</th>
+				<td>文件的原始大小，单位为字节</td>
+			</tr>
+			<tr>
+				<th>
+					<a>loaded</a>
+				</th>
+				<td>文件已上传部分的大小，单位为字节</td>
+			</tr>
+			<tr>
+				<th>
+					<a>percent</a>
+				</th>
+				<td>文件已上传部分所占的百分比，如50就代表已上传了50%</td>
+			</tr>
+			<tr>
+				<th>
+					<a>status</a>
+				</th>
+				<td>文件的状态，可能为以下几个值之一：<code>plupload.QUEUED</code>, <code>plupload.UPLOADING</code>, <code>plupload.FAILED</code>, <code>plupload.DONE</code></td>
+			</tr>
+			<tr>
+				<th>
+					<a>lastModifiedDate</a>
+				</th>
+				<td>文件最后修改的时间</td>
+			</tr>
+			<tr>
+				<th>
+					<a>getNative()</a>
+				</th>
+				<td>获取原生的文件对象</td>
+			</tr>
+			<tr>
+				<th>
+					<a>getSource()</a>
+				</th>
+				<td>获取mOxie.File 对象，想了解mOxie是什么东西，可以看下https://github.com/moxiecode/moxie/wiki/API</td>
+			</tr>
+			<tr>
+				<th>
+					<a>destroy()</a>
+				</th>
+				<td>销毁文件对象</td>
+			</tr>
+		</tbody>
+	</table>
+	<p id="plupload_doc6">
+		<strong>六、QueueProgress 对象的属性</strong>
+	</p>
+	<p>plupload实例的total属性是一个QueueProgress对象</p>
+	<table class="mytable" style="width: 98%;" border="1">
+		<tbody>
+			<tr>
+				<th width="160">属性</th>
+				<th>描述</th>
+			</tr>
+			<tr>
+				<th>
+					<a>size</a>
+				</th>
+				<td>上传队列中所有文件加起来的总大小，单位为字节</td>
+			</tr>
+			<tr>
+				<th>
+					<a>loaded</a>
+				</th>
+				<td>队列中当前已上传文件加起来的总大小,单位为字节</td>
+			</tr>
+			<tr>
+				<th>
+					<a>uploaded</a>
+				</th>
+				<td>已完成上传的文件的数量</td>
+			</tr>
+			<tr>
+				<th>
+					<a>failed</a>
+				</th>
+				<td>上传失败的文件数量</td>
+			</tr>
+			<tr>
+				<th>
+					<a>queued</a>
+				</th>
+				<td>队列中剩下的(也就是除开已经完成上传的文件)需要上传的文件数量</td>
+			</tr>
+			<tr>
+				<th>
+					<a>percent</a>
+				</th>
+				<td>整个队列的已上传百分比，如50就代表50%</td>
+			</tr>
+			<tr>
+				<th>
+					<a>bytesPerSec</a>
+				</th>
+				<td>上传速率，单位为 byte/s，也就是 字节/秒</td>
+			</tr>
+			
+		</tbody>
+	</table>
+	<p id="plupload_doc7">
+		<strong>七、plupload命名空间上的一些属性</strong>
+	</p>
+	<p>plupload的命名空间上有一些属性，用来表示一些常量。记住，不是plupload实例的属性，而是plupload的属性</p>
+	<table class="mytable" style="width: 98%;" border="1">
+		<tbody>
+			<tr>
+				<th width="370">属性名称</th>
+				<th>描述</th>
+			</tr>
+			<tr>
+				<th><a>VERSION</a></th>
+				<td>
+					当前plupload的版本号
+				</td>
+			</tr>
+			<tr>
+				<th><a>STOPPED</a></th>
+				<td>
+					值为1，代表上传队列还未开始上传或者上传队列中的文件已经上传完毕时plupload实例的<code>state</code>属性值
+				</td>
+			</tr>
+			<tr>
+				<th><a>STARTED</a></th>
+				<td>
+					值为2，代表队列中的文件正在上传时plupload实例的<code>state</code>属性值	
+				</td>
+			</tr>
+			<tr>
+				<th><a>QUEUED</a></th>
+				<td>
+					值为1，代表某个文件已经被添加进队列等待上传时该文件对象的<code>status</code>属性值
+				</td>
+			</tr>
+			<tr>
+				<th><a>UPLOADING</a></th>
+				<td>
+					值为2，代表某个文件正在上传时该文件对象的<code>status</code>属性值
+				</td>
+			</tr>
+			<tr>
+				<th><a>FAILED</a></th>
+				<td>
+					值为4，代表某个文件上传失败后该文件对象的<code>status</code>属性值
+				</td>
+			</tr>
+			<tr>
+				<th><a>DONE</a></th>
+				<td>
+					值为5，代表某个文件上传成功后该文件对象的<code>status</code>属性值
+				</td>
+			</tr>
+			<tr>
+				<th><a>GENERIC_ERROR</a></th>
+				<td>
+					值为-100，发生通用错误时的错误代码
+				</td>
+			</tr>
+			<tr>
+				<th><a>HTTP_ERROR</a></th>
+				<td>
+					值为-200，发生http网络错误时的错误代码，例如服务气端返回的状态码不是200
+				</td>
+			</tr>
+			<tr>
+				<th><a>IO_ERROR</a></th>
+				<td>
+					值为-300，发生磁盘读写错误时的错误代码，例如本地上某个文件不可读
+				</td>
+			</tr>
+			<tr>
+				<th><a>SECURITY_ERROR</a></th>
+				<td>
+					值为-400，发生因为安全问题而产生的错误时的错误代码
+				</td>
+			</tr>
+			<tr>
+				<th><a>INIT_ERROR</a></th>
+				<td>
+					值为-500，初始化时发生错误的错误代码
+				</td>
+			</tr>
+			<tr>
+				<th><a>FILE_SIZE_ERROR</a></th>
+				<td>
+					值为-600，当选择的文件太大时的错误代码
+				</td>
+			</tr>
+			<tr>
+				<th><a>FILE_EXTENSION_ERROR</a></th>
+				<td>
+					值为-601，当选择的文件类型不符合要求时的错误代码
+				</td>
+			</tr>
+			<tr>
+				<th><a>FILE_DUPLICATE_ERROR</a></th>
+				<td>
+					值为-602，当选取了重复的文件而配置中又不允许有重复文件时的错误代码
+				</td>
+			</tr>
+			<tr>
+				<th><a>IMAGE_FORMAT_ERROR </a></th>
+				<td>
+					值为-700，发生图片格式错误时的错误代码
+				</td>
+			</tr>
+			<tr>
+				<th><a>IMAGE_MEMORY_ERROR</a></th>
+				<td>
+					当发生内存错误时的错误代码
+				</td>
+			</tr>
+			<tr>
+				<th><a>IMAGE_DIMENSIONS_ERROR</a></th>
+				<td>
+					值为-702，当文件大小超过了plupload所能处理的最大值时的错误代码
+				</td>
+			</tr>
+			
+		</tbody>
+	</table>
+	<p style="position: fixed; border:1px solid #666; padding:5px; bottom:0; right:0;"><a href="#">↑回顶部</a></p>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>图片上传前的预览——plupload演示demo</title>
+	<script src="js/jquery-1.10.2.min.js"></script>
+	<script src="js/plupload.full.min.js"></script>
+	<style>
+	body{ font-size: 12px;}
+	body,p,div{ padding: 0; margin: 0;}
+	.wraper{ padding: 30px 0;}
+	.btn-wraper{ text-align: center;}
+	.btn-wraper input{ margin: 0 10px;}
+	#file-list{ width: 350px; margin: 20px auto;}
+	#file-list li{ margin-bottom: 10px;}
+	.file-name{ line-height: 30px;}
+	.progress{ height: 4px; font-size: 0; line-height: 4px; background: orange; width: 0;}
+	.tip1{text-align: center; font-size:14px; padding-top:10px;}
+    .tip2{text-align: center; font-size:12px; padding-top:10px; color:#b00}
+    .catalogue{ position: fixed; _position:absolute; _width:200px; left: 0; top: 0; border: 1px solid #ccc;padding: 10px; background: #eee}
+    .catalogue a{ line-height: 30px; color: #0c0}
+    .catalogue li{ padding: 0; margin: 0; list-style: none;}
+	</style>
+</head>
+<body>
+	<p class="tip1">本demo实现的图片预览功能需要浏览器支持data URL，如果支持canvas则效果更佳</p>
+	<div class="wraper">
+		<div class="btn-wraper">
+			<input type="button" value="选择文件..." id="browse" />
+		</div>
+		<ul id="file-list">
+
+		</ul>
+	</div>
+	<ul class="catalogue">
+		<li><a href="index.html">1、最基本的使用demo</a></li>
+		<li><a href="index2.html">2、文件过滤功能demo</a></li>
+		<li><a href="index3.html">3、拖拽上传功能demo</a></li>
+		<li><a href="index4.html">4、图片预览功能demo</a></li>
+		<li><a href="http://chaping.github.io/plupload/doc/">Plupload文档</a></li>
+	</ul>
+	<script>	
+	var uploader = new plupload.Uploader({ //实例化一个plupload上传对象
+		browse_button : 'browse',
+		url : 'upload.html',
+		flash_swf_url : 'js/Moxie.swf',
+		silverlight_xap_url : 'js/Moxie.xap',
+		filters: {
+		  mime_types : [ //只允许上传图片文件
+		    { title : "图片文件", extensions : "jpg,gif,png" }
+		  ]
+		}
+	});
+	uploader.init(); //初始化
+
+	//绑定文件添加进队列事件
+	uploader.bind('FilesAdded',function(uploader,files){
+		for(var i = 0, len = files.length; i<len; i++){
+			var file_name = files[i].name; //文件名
+			//构造html来更新UI
+			var html = '<li id="file-' + files[i].id +'"><p class="file-name">' + file_name + '</p><p class="progress"></p></li>';
+			$(html).appendTo('#file-list');
+			!function(i){
+				previewImage(files[i],function(imgsrc){
+					$('#file-'+files[i].id).append('<img src="'+ imgsrc +'" />');
+				})
+		    }(i);
+		}
+	});
+
+	//plupload中为我们提供了mOxie对象
+	//有关mOxie的介绍和说明请看：https://github.com/moxiecode/moxie/wiki/API
+	//如果你不想了解那么多的话，那就照抄本示例的代码来得到预览的图片吧
+	function previewImage(file,callback){//file为plupload事件监听函数参数中的file对象,callback为预览图片准备完成的回调函数
+		if(!file) return;
+		var preloader = new mOxie.Image();
+		preloader.onload = function() {
+			preloader.downsize( 300, 300 );//先压缩一下要预览的图片
+			var imgsrc =  preloader.getAsDataURL(); //得到图片src,实质为一个base64编码的数据
+			callback && callback(imgsrc); //callback传入的参数为预览图片的url
+		};
+		preloader.load( file.getSource() );
+	}
+
+	
+	
+	</script>
+</body>
+</html>
