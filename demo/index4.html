@@ -76,7 +76,7 @@
 		var preloader = new mOxie.Image();
 		preloader.onload = function() {
 			preloader.downsize( 300, 300 );//先压缩一下要预览的图片
-			var imgsrc =  preloader.getAsDataURL(); //得到图片src,实质为一个base64编码的数据
+			var imgsrc = preloader.type=='image/jpeg' ? preloader.getAsDataURL('image/jpeg',60) : preloader.getAsDataURL(); //得到图片src,实质为一个base64编码的数据
 			callback && callback(imgsrc); //callback传入的参数为预览图片的url
 		};
 		preloader.load( file.getSource() );
